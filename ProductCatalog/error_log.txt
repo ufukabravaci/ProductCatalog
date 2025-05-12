@@ -1,0 +1,2 @@
+12.05.2025 21:33:07: AddCategory - A write operation resulted in an error. WriteError: { Category : "DuplicateKey", Code : 11000, Message : "E11000 duplicate key error collection: ProductCategory.categories index: name_unique_index dup key: { name: "Electronics" }" }.
+12.05.2025 21:56:18: AddProduct - An error occurred while serializing the CategoryId property of class ProductCatalog.models.Product: '11' is not a valid 24 digit hex string.

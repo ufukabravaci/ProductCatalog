@@ -5,7 +5,9 @@ namespace ProductCatalog.utils
     public class DBMongo
     {
         private readonly string _connectionString = "mongodb://localhost:27017";
-        private readonly string _databaseName = "ProductCatalog";
+        // Hata almak için
+        // private readonly string _connectionString = "mongodb://localhost:00000"; 
+        private readonly string _databaseName = "ProductCategory";
         private readonly IMongoDatabase _database;
 
         public DBMongo()

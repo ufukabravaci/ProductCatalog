@@ -10,7 +10,7 @@ namespace ProductCatalog.models
 {
     public class Product
     {
-        public Product(string name, string categoryId)
+        public Product(string name, string categoryId) //name ve categoryId zorunlu createdat otomatik
         {
             Name = name;
             CategoryId = categoryId;
