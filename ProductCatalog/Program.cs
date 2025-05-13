@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks.Dataflow;
-using ProductCatalog.models;
+﻿using ProductCatalog.models;
 using ProductCatalog.services;
 using ProductCatalog.utils;
 
@@ -37,7 +35,7 @@ namespace ProductCatalog
 
                 switch (input)
                 {
-                    case "1":
+                    case "1": 
                         Console.WriteLine("Ürün ekleme işlemi seçildi.");
 
                         Console.Write("Ürün adı: ");
@@ -90,6 +88,61 @@ namespace ProductCatalog
                         break;
                     case "2":
                         Console.WriteLine("Ürün güncelleme işlemi seçildi.");
+                        Console.WriteLine("Güncellenecek ürünün ID'sini girin: ");
+                        string productIdToUpdate = Console.ReadLine()?.Trim() ?? "";
+                        if (string.IsNullOrWhiteSpace(productIdToUpdate))
+                        {
+                            Console.WriteLine("Ürün ID'si boş olamaz.");
+                            break;
+                        }
+                        Console.Write("Ürün adı: ");
+                        string productNameToUpdate = Console.ReadLine()?.Trim() ?? "";
+                        if (string.IsNullOrWhiteSpace(productNameToUpdate))
+                        {
+                            Console.WriteLine("Ürün adı boş olamaz.");
+                            break;
+                        }
+
+                        Console.Write("Açıklama: ");
+                        string descriptionToUpdate = Console.ReadLine()?.Trim() ?? "";
+
+                        Console.Write("Fiyat: ");
+                        if (!decimal.TryParse(Console.ReadLine(), out decimal priceToUpdate) || priceToUpdate <= 0)
+                        {
+                            Console.WriteLine("Geçerli ve pozitif bir fiyat girilmelidir.");
+                            break;
+                        }
+
+                        Console.Write("Stok: ");
+                        if (!int.TryParse(Console.ReadLine(), out int stockToUpdate) || stockToUpdate < 0)
+                        {
+                            Console.WriteLine("Geçerli ve negatif olmayan bir stok değeri girilmelidir.");
+                            break;
+                        }
+
+                        Console.Write("Kategori Id: ");
+                        string categoryIdToUpdate = Console.ReadLine()?.Trim() ?? "";
+                        if (string.IsNullOrWhiteSpace(categoryIdToUpdate))
+                        {
+                            Console.WriteLine("Kategori Id boş olamaz.");
+                            break;
+                        }
+                        
+
+                        Product productToUpdate = new(productIdToUpdate,productNameToUpdate, descriptionToUpdate, priceToUpdate, stockToUpdate, categoryIdToUpdate);
+                        int isUpdated = productService.UpdateProduct(productToUpdate);
+                        if (isUpdated == 1)
+                        {
+                            Console.WriteLine("Ürün başarıyla güncellendi.");
+                        }
+                        else if (isUpdated == -2)
+                        {
+                            Console.WriteLine("Ürün güncellenemedi. Kategori ID'si geçersiz.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Ürün güncellenirken bir hata oluştu.");
+                        }
                         break;
 
                     case "3":

@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -16,6 +12,18 @@ namespace ProductCatalog.models
             CategoryId = categoryId;
             CreatedAt = DateTime.UtcNow;
         }
+        //Update için id'li ctor
+        public Product(string id,string name, string description, decimal price, int stock, string categoryId)
+        {
+            Id = id;
+            Name = name;
+            Description = description;
+            Price = price;
+            Stock = stock;
+            CategoryId = categoryId;
+            CreatedAt = DateTime.UtcNow;
+        }
+        //Insert için id'siz ctor
         public Product(string name, string description, decimal price, int stock, string categoryId)
         {
             Name = name;
