@@ -12,7 +12,7 @@ namespace ProductCatalog
             //Servisleri çağır.
             DBMongo dbMongo = new();
             CategoryService categoryService = new(dbMongo);
-            ProductService productService = new(categoryService,dbMongo);
+            ProductService productService = new(categoryService, dbMongo);
             bool isExit = false;
             while (!isExit)
             {
@@ -20,22 +20,23 @@ namespace ProductCatalog
                 Console.WriteLine("1-)Ürün Ekleme");
                 Console.WriteLine("2-)Ürün Güncelleme");
                 Console.WriteLine("3-)Ürün Silme");
-                Console.WriteLine("4-)Ürün Listeleme");
-                Console.WriteLine("5-)Ürün Arama");
-                Console.WriteLine("6-)Ürün Filtreleme");
-                Console.WriteLine("7-)Kategori Ekleme");
-                Console.WriteLine("8-)Kategori Güncelleme");
-                Console.WriteLine("9-)Kategori Silme");
-                Console.WriteLine("10-)Kategori Listeleme");
-                Console.WriteLine("11-)Hata Loglarını Görüntüleme");
-                Console.WriteLine("12-)Hata Loglarında Arama");
+                Console.WriteLine("4-)Ürün Getir");
+                Console.WriteLine("5-)Ürün Listeleme");
+                Console.WriteLine("6-)Ürün Arama");
+                Console.WriteLine("7-)Ürün Filtreleme");
+                Console.WriteLine("8-)Kategori Ekleme");
+                Console.WriteLine("9-)Kategori Güncelleme");
+                Console.WriteLine("10-)Kategori Silme");
+                Console.WriteLine("11-)Kategori Listeleme");
+                Console.WriteLine("12-)Hata Loglarını Görüntüleme");
+                Console.WriteLine("13-)Hata Loglarında Arama");
                 Console.WriteLine("Çıkmak için 'q' veya 'exit' yazın.");
                 Console.Write("\nSeçiminiz: ");
                 input = Console.ReadLine()!.Trim().ToLower();
 
                 switch (input)
                 {
-                    case "1": 
+                    case "1":
                         Console.WriteLine("Ürün ekleme işlemi seçildi.");
 
                         Console.Write("Ürün adı: ");
@@ -70,11 +71,11 @@ namespace ProductCatalog
                             Console.WriteLine("Kategori Id boş olamaz.");
                             break;
                         }
-                        
+
 
                         Product product = new(productName, description, price, stock, categoryId);
                         int result = productService.AddProduct(product);
-                        if(result == 1)
+                        if (result == 1)
                         {
                             Console.WriteLine("Ürün başarıyla eklendi.");
                         }
@@ -82,7 +83,8 @@ namespace ProductCatalog
                         {
                             Console.WriteLine("Ürün eklenemedi. Kategori ID'si geçersiz.");
                         }
-                        else{
+                        else
+                        {
                             Console.WriteLine("Ürün eklenirken bir hata oluştu.");
                         }
                         break;
@@ -127,9 +129,9 @@ namespace ProductCatalog
                             Console.WriteLine("Kategori Id boş olamaz.");
                             break;
                         }
-                        
 
-                        Product productToUpdate = new(productIdToUpdate,productNameToUpdate, descriptionToUpdate, priceToUpdate, stockToUpdate, categoryIdToUpdate);
+
+                        Product productToUpdate = new(productIdToUpdate, productNameToUpdate, descriptionToUpdate, priceToUpdate, stockToUpdate, categoryIdToUpdate);
                         int isUpdated = productService.UpdateProduct(productToUpdate);
                         if (isUpdated == 1)
                         {
@@ -147,21 +149,53 @@ namespace ProductCatalog
 
                     case "3":
                         Console.WriteLine("Ürün silme işlemi seçildi.");
+                        Console.WriteLine("Silmek istediğiniz ürünün ID'sini giriniz.");
+                        string deleteId = Console.ReadLine()?.Trim() ?? "";
+                        if (string.IsNullOrWhiteSpace(deleteId))
+                        {
+                            Console.WriteLine("ID null olamaz. İşlem başarısız.");
+                        }
+                        int deleteResult = productService.DeleteProduct(deleteId);
+                        if (deleteResult == 0)
+                        {
+                            Console.WriteLine("Ürün silme işlemi başarısız oldu.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Ürün silindi.");
+                        }
                         break;
 
                     case "4":
-                        Console.WriteLine("Ürün listeleme işlemi seçildi.");
+                        Console.WriteLine("Ürün Getirme işlemi seçildi.");
+                        Console.WriteLine("Ürün ID'si giriniz.");
+                        string productId2 = Console.ReadLine()?.Trim() ?? "";
+                        var productById = productService.GetProductById(productId2);
+                        if (productById != null)
+                        {
+                            Console.WriteLine("===============***************===============");
+                            Console.WriteLine($"ID: {productById.Id}\nName: {productById.Name}\nPrice: {productById.Price}\nCategory: {categoryService.GetCategoryNameById(productById.CategoryId)}\nDescription: {productById.Description}\n ");
+                        }
                         break;
 
                     case "5":
-                        Console.WriteLine("Ürün arama işlemi seçildi.");
+                        Console.WriteLine("Ürün listeleme işlemi seçildi.");
+                        var productsList = productService.GetProducts(pageNumber: 1, pageSize: 10);
+                        foreach (var productList in productsList)
+                        {
+                            Console.WriteLine("===============***************===============");
+                            Console.WriteLine($"ID: {productList.Id}\nName: {productList.Name}\nPrice: {productList.Price}\nCategory: {categoryService.GetCategoryNameById(productList.CategoryId)}\nDescription: {productList.Description}\n ");
+                        }
                         break;
 
                     case "6":
+                        Console.WriteLine("Ürün arama işlemi seçildi.");
+                        break;
+                    case "7":
                         Console.WriteLine("Ürün filtreleme işlemi seçildi.");
                         break;
 
-                    case "7":
+                    case "8":
                         Console.WriteLine("Kategori ekleme işlemi seçildi.");
                         Console.Write("Kategori adı: ");
                         string categoryName = Console.ReadLine()?.Trim() ?? "";
@@ -182,23 +216,23 @@ namespace ProductCatalog
                         }
                         break;
 
-                    case "8":
+                    case "9":
                         Console.WriteLine("Kategori güncelleme işlemi seçildi.");
                         break;
 
-                    case "9":
+                    case "10":
                         Console.WriteLine("Kategori silme işlemi seçildi.");
                         break;
 
-                    case "10":
+                    case "11":
                         Console.WriteLine("Kategori listeleme işlemi seçildi.");
                         break;
 
-                    case "11":
+                    case "12":
                         Console.WriteLine("Hata loglarını görüntüleme işlemi seçildi.");
                         break;
 
-                    case "12":
+                    case "13":
                         Console.WriteLine("Hata loglarında arama işlemi seçildi.");
                         break;
 

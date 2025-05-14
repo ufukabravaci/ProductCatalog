@@ -45,5 +45,27 @@ namespace ProductCatalog.services
             var category = _categoriesCollection.Find(filter).FirstOrDefault();
             return category != null;
         }
+        public string? GetCategoryNameById(string categoryId)
+        {
+            try
+            {
+                var filter = Builders<Category>.Filter.Eq(c => c.Id, categoryId);
+                var category = _categoriesCollection.Find(filter).FirstOrDefault();
+
+                if (category == null)
+                {
+                    LogError("Kategori bulunamadı.", nameof(GetCategoryNameById), DateTime.UtcNow);
+                    return null;
+                }
+
+                return category.Name;
+            }
+            catch (Exception ex)
+            {
+                LogError(ex.Message, nameof(GetCategoryNameById), DateTime.UtcNow);
+                return null;
+            }
+        }
+
     }
 }

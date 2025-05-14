@@ -1,3 +1,4 @@
+using System.IO.Pipelines;
 using MongoDB.Driver;
 using ProductCatalog.models;
 using ProductCatalog.utils;
@@ -52,7 +53,7 @@ namespace ProductCatalog.services
                 // Kategori kontrolü
                 if (!_categoryService.CategoryExists(updatedProduct.CategoryId))
                 {
-                    Console.WriteLine("Hata: Girilen kategori ID geçersiz. Ürün güncellenemedi.");
+                    LogError("CategoryId bulunamadı.", nameof(UpdateProduct), DateTime.UtcNow);
                     return -2;
                 }
 
@@ -81,6 +82,53 @@ namespace ProductCatalog.services
                 return -1;
             }
         }
+
+        public int DeleteProduct(string productId)
+        {
+            try
+            {
+                var filter = Builders<Product>.Filter.Eq(p => p.Id, productId);
+                var result = _productsCollection.DeleteOne(filter);
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                LogError(ex.Message, nameof(DeleteProduct), DateTime.UtcNow);
+                return 0;
+            }
+        }
+
+        public Product? GetProductById(string productId)
+        {
+            try
+            {
+                var filter = Builders<Product>.Filter.Eq(p => p.Id, productId);
+                var product = _productsCollection.Find(filter).FirstOrDefault();
+                return product;
+            }
+            catch (Exception ex)
+            {
+                LogError(ex.Message, nameof(GetProductById), DateTime.UtcNow);
+                return null;
+            }
+        }
+
+        public List<Product> GetProducts(int pageNumber = 1, int pageSize = 10)
+        {
+            try
+            {
+                if (pageNumber < 1) pageNumber = 1;
+                if (pageSize < 1) pageSize = 10;
+
+                return _productsCollection.Find(_ => true).Skip((pageNumber - 1) * pageSize).Limit(pageSize).ToList();
+            }
+            catch (Exception ex)
+            {
+                LogError(ex.Message, nameof(GetProducts), DateTime.UtcNow);
+                return new List<Product>();
+            }
+        }
+
 
         // Hata oluşan metot, hata mesajı ve zaman damgası olacak şekilde bir log metodu
         private void LogError(string message, string methodName, DateTime timeStamp)
