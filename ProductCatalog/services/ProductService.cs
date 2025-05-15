@@ -1,4 +1,5 @@
 using System.IO.Pipelines;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using ProductCatalog.models;
 using ProductCatalog.utils;
@@ -125,6 +126,50 @@ namespace ProductCatalog.services
             catch (Exception ex)
             {
                 LogError(ex.Message, nameof(GetProducts), DateTime.UtcNow);
+                return new List<Product>();
+            }
+        }
+
+        public List<Product> GetSearchProducts(string keyword)
+        {
+            try
+            {
+                var filter = Builders<Product>.Filter.Or(
+                    Builders<Product>.Filter.Regex(p => p.Name, new BsonRegularExpression(keyword, "i")),
+                    Builders<Product>.Filter.Regex(p => p.Description, new BsonRegularExpression(keyword, "i"))
+                );
+                return _productsCollection.Find(filter).ToList();
+            }
+            catch (Exception ex)
+            {
+                LogError(ex.Message, nameof(GetSearchProducts), DateTime.UtcNow);
+                return new List<Product>();
+            }
+        }
+
+        public List<Product> FilterProducts(decimal? minFiyat = null, decimal? maxFiyat = null, string? kategoriId = null)
+        {
+            try
+            {
+                var builder = Builders<Product>.Filter; //FilterDefinitionBuilder nesnesi
+                var filter = Builders<Product>.Filter.Empty; //boş filter nesnesi
+                if(minFiyat.HasValue)
+                {
+                    filter = builder.And(filter, builder.Gte(p => p.Price, minFiyat.Value));
+                }
+                if(maxFiyat.HasValue)
+                {
+                    filter = builder.And(filter, builder.Lte(p => p.Price, maxFiyat.Value));
+                }
+                if(!string.IsNullOrWhiteSpace(kategoriId))
+                {
+                    filter = builder.And(filter, builder.Eq(p => p.CategoryId, kategoriId));
+                }
+                return _productsCollection.Find(filter).ToList();
+            }
+            catch (Exception ex)
+            {
+                LogError(ex.Message, nameof(FilterProducts), DateTime.UtcNow);
                 return new List<Product>();
             }
         }

@@ -190,9 +190,52 @@ namespace ProductCatalog
 
                     case "6":
                         Console.WriteLine("Ürün arama işlemi seçildi.");
+                        Console.Write("Arama yapmak istediğiniz kelimeyi giriniz: ");
+                        string keyword = Console.ReadLine()?.Trim() ?? "";
+                        if (!string.IsNullOrEmpty(keyword))
+                        {
+                            var searchList = productService.GetSearchProducts(keyword);
+                            if (searchList.Any())
+                            {
+                                Console.WriteLine($"{searchList.Count} adet ürün bulundu.");
+                                foreach (var sl in searchList)
+                                {
+                                    Console.WriteLine("===============***************===============");
+                                    Console.WriteLine($"ID: {sl.Id}\nName: {sl.Name}\nPrice: {sl.Price}\nCategory: {categoryService.GetCategoryNameById(sl.CategoryId)}\nDescription: {sl.Description}\n ");
+
+                                }
+                            }
+                            else{
+                                Console.WriteLine("Aradığınız kritere uygun ürün bulunamadı.");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Arama yapmak istediğiniz kelime boş olamaz.");
+                        }
                         break;
                     case "7":
                         Console.WriteLine("Ürün filtreleme işlemi seçildi.");
+                        Console.Write("Minimum Fiyat Giriniz: ");
+                        decimal.TryParse(Console.ReadLine(), out decimal minVal);
+                        Console.Write("Maksimum Fiyat Giriniz: ");
+                        decimal.TryParse(Console.ReadLine(), out decimal maxVal);
+                        Console.Write("KategoriID giriniz: ");
+                        string catId = Console.ReadLine()?.Trim() ?? "";
+                        var filteredList = productService.FilterProducts(minVal, maxVal, catId);
+                        if (filteredList.Any())
+                            {
+                                Console.WriteLine($"{filteredList.Count} adet ürün bulundu.");
+                                foreach (var sl in filteredList)
+                                {
+                                    Console.WriteLine("===============***************===============");
+                                    Console.WriteLine($"ID: {sl.Id}\nName: {sl.Name}\nPrice: {sl.Price}\nCategory: {categoryService.GetCategoryNameById(sl.CategoryId)}\nDescription: {sl.Description}\n ");
+
+                                }
+                            }
+                            else{
+                                Console.WriteLine("Aradığınız kritere uygun ürün bulunamadı.");
+                            }
                         break;
 
                     case "8":
