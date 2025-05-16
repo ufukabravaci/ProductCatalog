@@ -32,6 +32,63 @@ namespace ProductCatalog.services
             }
         }
 
+        public int UpdateCategory(string categoryId, string categoryName)
+        {
+            try
+            {
+                var filter = Builders<Category>.Filter.Eq(c => c.Id, categoryId);
+                var update = Builders<Category>.Update.Set(c => c.Name, categoryName);
+                var result = _categoriesCollection.UpdateOne(filter, update);
+                if (result.ModifiedCount == 0)
+                {
+                    Console.WriteLine($"Kategori ismi zaten {categoryName}");
+                    return 0;
+                }
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                LogError(ex.Message, nameof(AddCategory), DateTime.UtcNow);
+                return -1;
+            }
+        }
+
+        public int DeleteCategory(string categoryId)
+        {
+            try
+            {
+                if (!CategoryExists(categoryId))
+                {
+                    LogError("Silinmek istenen kategori bulunamadı.", nameof(DeleteCategory), DateTime.UtcNow);
+                    return 0;
+                }
+
+                var filter = Builders<Category>.Filter.Eq(c => c.Id, categoryId);
+                var result = _categoriesCollection.DeleteOne(filter);
+
+                return result.DeletedCount > 0 ? 1 : -1;
+            }
+            catch (Exception ex)
+            {
+                LogError(ex.Message, nameof(DeleteCategory), DateTime.UtcNow);
+                return -1;
+            }
+        }
+
+        public List<Category> GetAllCategories()
+        {
+            try
+            {
+                return _categoriesCollection.Find(_ => true).ToList();
+            }
+            catch (Exception ex)
+            {
+                LogError(ex.Message, nameof(GetAllCategories), DateTime.UtcNow);
+                return new List<Category>();
+            }
+        }
+
+
 
         private void LogError(string message, string methodName, DateTime timeStamp)
         {

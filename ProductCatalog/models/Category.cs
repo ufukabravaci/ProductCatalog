@@ -11,6 +11,11 @@ namespace ProductCatalog.models
         {
             Name = name;
         }
+        public Category(string id,string name)
+        {
+            Id = id;
+            Name = name;
+        }
 
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]

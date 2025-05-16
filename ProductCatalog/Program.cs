@@ -31,7 +31,7 @@ namespace ProductCatalog
                 Console.WriteLine("12-)Hata Loglarını Görüntüleme");
                 Console.WriteLine("13-)Hata Loglarında Arama");
                 Console.WriteLine("Çıkmak için 'q' veya 'exit' yazın.");
-                Console.Write("\nSeçiminiz: ");
+                Console.WriteLine("\nSeçiminiz: ");
                 input = Console.ReadLine()!.Trim().ToLower();
 
                 switch (input)
@@ -39,7 +39,7 @@ namespace ProductCatalog
                     case "1":
                         Console.WriteLine("Ürün ekleme işlemi seçildi.");
 
-                        Console.Write("Ürün adı: ");
+                        Console.WriteLine("Ürün adı: ");
                         string productName = Console.ReadLine()?.Trim() ?? "";
                         if (string.IsNullOrWhiteSpace(productName))
                         {
@@ -47,24 +47,24 @@ namespace ProductCatalog
                             break;
                         }
 
-                        Console.Write("Açıklama: ");
+                        Console.WriteLine("Açıklama: ");
                         string description = Console.ReadLine()?.Trim() ?? "";
 
-                        Console.Write("Fiyat: ");
+                        Console.WriteLine("Fiyat: ");
                         if (!decimal.TryParse(Console.ReadLine(), out decimal price) || price <= 0)
                         {
                             Console.WriteLine("Geçerli ve pozitif bir fiyat girilmelidir.");
                             break;
                         }
 
-                        Console.Write("Stok: ");
+                        Console.WriteLine("Stok: ");
                         if (!int.TryParse(Console.ReadLine(), out int stock) || stock < 0)
                         {
                             Console.WriteLine("Geçerli ve negatif olmayan bir stok değeri girilmelidir.");
                             break;
                         }
 
-                        Console.Write("Kategori Id: ");
+                        Console.WriteLine("Kategori Id: ");
                         string categoryId = Console.ReadLine()?.Trim() ?? "";
                         if (string.IsNullOrWhiteSpace(categoryId))
                         {
@@ -97,7 +97,7 @@ namespace ProductCatalog
                             Console.WriteLine("Ürün ID'si boş olamaz.");
                             break;
                         }
-                        Console.Write("Ürün adı: ");
+                        Console.WriteLine("Ürün adı: ");
                         string productNameToUpdate = Console.ReadLine()?.Trim() ?? "";
                         if (string.IsNullOrWhiteSpace(productNameToUpdate))
                         {
@@ -105,24 +105,24 @@ namespace ProductCatalog
                             break;
                         }
 
-                        Console.Write("Açıklama: ");
+                        Console.WriteLine("Açıklama: ");
                         string descriptionToUpdate = Console.ReadLine()?.Trim() ?? "";
 
-                        Console.Write("Fiyat: ");
+                        Console.WriteLine("Fiyat: ");
                         if (!decimal.TryParse(Console.ReadLine(), out decimal priceToUpdate) || priceToUpdate <= 0)
                         {
                             Console.WriteLine("Geçerli ve pozitif bir fiyat girilmelidir.");
                             break;
                         }
 
-                        Console.Write("Stok: ");
+                        Console.WriteLine("Stok: ");
                         if (!int.TryParse(Console.ReadLine(), out int stockToUpdate) || stockToUpdate < 0)
                         {
                             Console.WriteLine("Geçerli ve negatif olmayan bir stok değeri girilmelidir.");
                             break;
                         }
 
-                        Console.Write("Kategori Id: ");
+                        Console.WriteLine("Kategori Id: ");
                         string categoryIdToUpdate = Console.ReadLine()?.Trim() ?? "";
                         if (string.IsNullOrWhiteSpace(categoryIdToUpdate))
                         {
@@ -190,7 +190,7 @@ namespace ProductCatalog
 
                     case "6":
                         Console.WriteLine("Ürün arama işlemi seçildi.");
-                        Console.Write("Arama yapmak istediğiniz kelimeyi giriniz: ");
+                        Console.WriteLine("Arama yapmak istediğiniz kelimeyi giriniz: ");
                         string keyword = Console.ReadLine()?.Trim() ?? "";
                         if (!string.IsNullOrEmpty(keyword))
                         {
@@ -205,7 +205,8 @@ namespace ProductCatalog
 
                                 }
                             }
-                            else{
+                            else
+                            {
                                 Console.WriteLine("Aradığınız kritere uygun ürün bulunamadı.");
                             }
                         }
@@ -216,31 +217,32 @@ namespace ProductCatalog
                         break;
                     case "7":
                         Console.WriteLine("Ürün filtreleme işlemi seçildi.");
-                        Console.Write("Minimum Fiyat Giriniz: ");
+                        Console.WriteLine("Minimum Fiyat Giriniz: ");
                         decimal.TryParse(Console.ReadLine(), out decimal minVal);
-                        Console.Write("Maksimum Fiyat Giriniz: ");
+                        Console.WriteLine("Maksimum Fiyat Giriniz: ");
                         decimal.TryParse(Console.ReadLine(), out decimal maxVal);
-                        Console.Write("KategoriID giriniz: ");
+                        Console.WriteLine("KategoriID giriniz: ");
                         string catId = Console.ReadLine()?.Trim() ?? "";
                         var filteredList = productService.FilterProducts(minVal, maxVal, catId);
                         if (filteredList.Any())
+                        {
+                            Console.WriteLine($"{filteredList.Count} adet ürün bulundu.");
+                            foreach (var sl in filteredList)
                             {
-                                Console.WriteLine($"{filteredList.Count} adet ürün bulundu.");
-                                foreach (var sl in filteredList)
-                                {
-                                    Console.WriteLine("===============***************===============");
-                                    Console.WriteLine($"ID: {sl.Id}\nName: {sl.Name}\nPrice: {sl.Price}\nCategory: {categoryService.GetCategoryNameById(sl.CategoryId)}\nDescription: {sl.Description}\n ");
+                                Console.WriteLine("===============***************===============");
+                                Console.WriteLine($"ID: {sl.Id}\nName: {sl.Name}\nPrice: {sl.Price}\nCategory: {categoryService.GetCategoryNameById(sl.CategoryId)}\nDescription: {sl.Description}\n ");
 
-                                }
                             }
-                            else{
-                                Console.WriteLine("Aradığınız kritere uygun ürün bulunamadı.");
-                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Aradığınız kritere uygun ürün bulunamadı.");
+                        }
                         break;
 
                     case "8":
                         Console.WriteLine("Kategori ekleme işlemi seçildi.");
-                        Console.Write("Kategori adı: ");
+                        Console.WriteLine("Kategori adı: ");
                         string categoryName = Console.ReadLine()?.Trim() ?? "";
                         if (string.IsNullOrWhiteSpace(categoryName))
                         {
@@ -261,16 +263,86 @@ namespace ProductCatalog
 
                     case "9":
                         Console.WriteLine("Kategori güncelleme işlemi seçildi.");
+                        Console.WriteLine("Güncellenecek Kategoriye ait ID giriniz:");
+                        string cateId = Console.ReadLine()?.Trim() ?? "";
+                        if (!string.IsNullOrWhiteSpace(cateId))
+                        {
+                            if (categoryService.CategoryExists(cateId))
+                            {
+                                Console.WriteLine("Yeni Kategori ismini giriniz:");
+                                string cateName = Console.ReadLine()?.Trim() ?? "";
+                                if (!string.IsNullOrWhiteSpace(cateName))
+                                {
+                                    if (categoryService.UpdateCategory(cateId, cateName) == -1)
+                                    {
+                                        Console.WriteLine("Kategori Güncellenirken bir hata oluştu.");
+                                    }
+                                    if (categoryService.UpdateCategory(cateId, cateName) == 1)
+                                    {
+                                        Console.WriteLine($"Kategori güncellendi.{cateId} numaralı kategorinin yeni kategori ismi {cateName} olarak değiştirildi.");
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Kategori ismi boş olamaz.");
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Girmiş olduğunuz kategoryId bir kategoriye ait değil. Lütfen doğru bir kategoryId ile tekrar deneyin.");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("KategoryId boş olamaz.");
+                        }
                         break;
 
                     case "10":
                         Console.WriteLine("Kategori silme işlemi seçildi.");
+                        Console.Write("Silmek istediğiniz kategori ID'sini giriniz: ");
+                        string delId = Console.ReadLine()?.Trim() ?? "";
+
+                        if (!string.IsNullOrWhiteSpace(delId))
+                        {
+                            var delres = categoryService.DeleteCategory(delId);
+                            if (delres == 1)
+                            {
+                                Console.WriteLine("Kategori başarıyla silindi.");
+                            }
+                            else if (delres == 0)
+                            {
+                                Console.WriteLine("Kategori bulunamadı. Lütfen geçerli bir ID girin.");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Kategori silinirken bir hata oluştu.");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Kategori ID boş olamaz.");
+                        }
                         break;
+
 
                     case "11":
                         Console.WriteLine("Kategori listeleme işlemi seçildi.");
-                        break;
+                        var allCategories = categoryService.GetAllCategories();
 
+                        if (allCategories.Any())
+                        {
+                            Console.WriteLine($"{allCategories.Count} adet kategori bulundu:");
+                            foreach (var cat in allCategories)
+                            {
+                                Console.WriteLine($"ID: {cat.Id} Name: {cat.Name}");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Hiç kategori bulunamadı.");
+                        }
+                        break;
                     case "12":
                         Console.WriteLine("Hata loglarını görüntüleme işlemi seçildi.");
                         break;
