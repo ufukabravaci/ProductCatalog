@@ -9,16 +9,17 @@ namespace ProductCatalog.services
     public class ProductService
     {
         private readonly IMongoCollection<Product> _productsCollection;
-        private readonly string _logFilePath = "error_log.txt";
-
         private readonly CategoryService _categoryService;
+
+        private readonly FileService _fileService;
         private readonly DBMongo _dbMongo;
 
-        public ProductService(CategoryService categoryService, DBMongo dBMongo)
+        public ProductService(CategoryService categoryService, DBMongo dBMongo, FileService fileService)
         {
             _dbMongo = dBMongo;
             _productsCollection = _dbMongo.GetCollection<Product>("products");
             _categoryService = categoryService;
+            _fileService = fileService;
         }
 
         public int AddProduct(Product product)
@@ -30,7 +31,7 @@ namespace ProductCatalog.services
                 if (!categoryExists)
                 {
                     string errorMessage = $"Geçersiz Kategori Id: {product.CategoryId}. Ürün eklenemedi.";
-                    LogError(errorMessage, nameof(AddProduct), DateTime.UtcNow);
+                    _fileService.LogError(errorMessage, nameof(AddProduct), DateTime.UtcNow);
                     Console.WriteLine(errorMessage); // Kullanıcıya da gösterdik
                     return -2; // özel kod: kategori yok
                 }
@@ -42,7 +43,7 @@ namespace ProductCatalog.services
             {
                 // Hata mesajını kullanıcıya program.cs'de gösteriyoruz burada sadece log dosyasına yazıyoruz.
                 //Log dosyası olduğu için UTC kullandım. Kullanıcıdan bağımsız global bir zaman damgası.
-                LogError(ex.Message, nameof(AddProduct), DateTime.UtcNow);
+                _fileService.LogError(ex.Message, nameof(AddProduct), DateTime.UtcNow);
                 return -1;
             }
         }
@@ -54,7 +55,7 @@ namespace ProductCatalog.services
                 // Kategori kontrolü
                 if (!_categoryService.CategoryExists(updatedProduct.CategoryId))
                 {
-                    LogError("CategoryId bulunamadı.", nameof(UpdateProduct), DateTime.UtcNow);
+                    _fileService.LogError("CategoryId bulunamadı.", nameof(UpdateProduct), DateTime.UtcNow);
                     return -2;
                 }
 
@@ -79,7 +80,7 @@ namespace ProductCatalog.services
             }
             catch (Exception ex)
             {
-                LogError(ex.Message, nameof(UpdateProduct), DateTime.UtcNow);
+                _fileService.LogError(ex.Message, nameof(UpdateProduct), DateTime.UtcNow);
                 return -1;
             }
         }
@@ -94,7 +95,7 @@ namespace ProductCatalog.services
             }
             catch (Exception ex)
             {
-                LogError(ex.Message, nameof(DeleteProduct), DateTime.UtcNow);
+                _fileService.LogError(ex.Message, nameof(DeleteProduct), DateTime.UtcNow);
                 return 0;
             }
         }
@@ -109,7 +110,7 @@ namespace ProductCatalog.services
             }
             catch (Exception ex)
             {
-                LogError(ex.Message, nameof(GetProductById), DateTime.UtcNow);
+                _fileService.LogError(ex.Message, nameof(GetProductById), DateTime.UtcNow);
                 return null;
             }
         }
@@ -125,7 +126,7 @@ namespace ProductCatalog.services
             }
             catch (Exception ex)
             {
-                LogError(ex.Message, nameof(GetProducts), DateTime.UtcNow);
+                _fileService.LogError(ex.Message, nameof(GetProducts), DateTime.UtcNow);
                 return new List<Product>();
             }
         }
@@ -142,7 +143,7 @@ namespace ProductCatalog.services
             }
             catch (Exception ex)
             {
-                LogError(ex.Message, nameof(GetSearchProducts), DateTime.UtcNow);
+                _fileService.LogError(ex.Message, nameof(GetSearchProducts), DateTime.UtcNow);
                 return new List<Product>();
             }
         }
@@ -169,17 +170,10 @@ namespace ProductCatalog.services
             }
             catch (Exception ex)
             {
-                LogError(ex.Message, nameof(FilterProducts), DateTime.UtcNow);
+                _fileService.LogError(ex.Message, nameof(FilterProducts), DateTime.UtcNow);
                 return new List<Product>();
             }
         }
 
-
-        // Hata oluşan metot, hata mesajı ve zaman damgası olacak şekilde bir log metodu
-        private void LogError(string message, string methodName, DateTime timeStamp)
-        {
-            string logMessage = $"{timeStamp}: {methodName} - {message}";
-            File.AppendAllText(_logFilePath, logMessage + Environment.NewLine);
-        }
     }
 }

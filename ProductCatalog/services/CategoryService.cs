@@ -7,14 +7,15 @@ namespace ProductCatalog.services
     public class CategoryService
     {
         private readonly IMongoCollection<Category> _categoriesCollection;
-        private readonly string _logFilePath = "error_log.txt";
-
         private readonly DBMongo _dbMongo;
 
-        public CategoryService(DBMongo dbMongo)
+        private readonly FileService _fileService;
+
+        public CategoryService(DBMongo dbMongo, FileService fileService)
         {
             _dbMongo = dbMongo;
             _categoriesCollection = dbMongo.GetCollection<Category>("categories");
+            _fileService = fileService;
         }
         public int AddCategory(Category category)
         {
@@ -27,7 +28,7 @@ namespace ProductCatalog.services
             {
                 // Hata mesajını kullanıcıya program.cs'de gösteriyoruz burada sadece log dosyasına yazıyoruz.
                 //Log dosyası olduğu için UTC kullandım. Kullanıcıdan bağımsız global bir zaman damgası.
-                LogError(ex.Message, nameof(AddCategory), DateTime.UtcNow);
+                _fileService.LogError(ex.Message, nameof(AddCategory), DateTime.UtcNow);
                 return -1;
             }
         }
@@ -39,16 +40,11 @@ namespace ProductCatalog.services
                 var filter = Builders<Category>.Filter.Eq(c => c.Id, categoryId);
                 var update = Builders<Category>.Update.Set(c => c.Name, categoryName);
                 var result = _categoriesCollection.UpdateOne(filter, update);
-                if (result.ModifiedCount == 0)
-                {
-                    Console.WriteLine($"Kategori ismi zaten {categoryName}");
-                    return 0;
-                }
                 return 1;
             }
             catch (Exception ex)
             {
-                LogError(ex.Message, nameof(AddCategory), DateTime.UtcNow);
+                _fileService.LogError(ex.Message, nameof(AddCategory), DateTime.UtcNow);
                 return -1;
             }
         }
@@ -59,7 +55,7 @@ namespace ProductCatalog.services
             {
                 if (!CategoryExists(categoryId))
                 {
-                    LogError("Silinmek istenen kategori bulunamadı.", nameof(DeleteCategory), DateTime.UtcNow);
+                    _fileService.LogError("Silinmek istenen kategori bulunamadı.", nameof(DeleteCategory), DateTime.UtcNow);
                     return 0;
                 }
 
@@ -70,7 +66,7 @@ namespace ProductCatalog.services
             }
             catch (Exception ex)
             {
-                LogError(ex.Message, nameof(DeleteCategory), DateTime.UtcNow);
+                _fileService.LogError(ex.Message, nameof(DeleteCategory), DateTime.UtcNow);
                 return -1;
             }
         }
@@ -83,18 +79,11 @@ namespace ProductCatalog.services
             }
             catch (Exception ex)
             {
-                LogError(ex.Message, nameof(GetAllCategories), DateTime.UtcNow);
+                _fileService.LogError(ex.Message, nameof(GetAllCategories), DateTime.UtcNow);
                 return new List<Category>();
             }
         }
 
-
-
-        private void LogError(string message, string methodName, DateTime timeStamp)
-        {
-            string logMessage = $"{timeStamp}: {methodName} - {message}";
-            File.AppendAllText(_logFilePath, logMessage + Environment.NewLine);
-        }
 
         public bool CategoryExists(string categoryId) //Kategori id'si kategori listesinde var mı kontrolü
         {
@@ -111,7 +100,7 @@ namespace ProductCatalog.services
 
                 if (category == null)
                 {
-                    LogError("Kategori bulunamadı.", nameof(GetCategoryNameById), DateTime.UtcNow);
+                    _fileService.LogError("Kategori bulunamadı.", nameof(GetCategoryNameById), DateTime.UtcNow);
                     return null;
                 }
 
@@ -119,7 +108,7 @@ namespace ProductCatalog.services
             }
             catch (Exception ex)
             {
-                LogError(ex.Message, nameof(GetCategoryNameById), DateTime.UtcNow);
+                _fileService.LogError(ex.Message, nameof(GetCategoryNameById), DateTime.UtcNow);
                 return null;
             }
         }
