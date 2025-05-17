@@ -31,8 +31,10 @@ Uygulama, gerçek veritabanı olarak **MongoDB** kullanır ve tüm işlemler kal
 4. Projeyi çalıştırın.
 
 ## 📸 Ekran Görüntüleri
-
+### Main-Menu
 ![Main-Menu](screenshots/Main-Menu.jpg)
+### Ürün-Ekleme
 ![Ürün Ekleme](screenshots/Add-Product.jpg)
+### Log-Kayıtları
 ![Error-Logs](screenshots/Error-logs.jpg)
 
