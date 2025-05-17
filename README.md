@@ -33,6 +33,6 @@ Uygulama, gerçek veritabanı olarak **MongoDB** kullanır ve tüm işlemler kal
 ## 📸 Ekran Görüntüleri
 
 ![Main-Menu](screenshots/Main-Menu.jpg)
-![Ürün Ekleme](screenshots/add-product.png)
+![Ürün Ekleme](screenshots/Add-Product.jpg)
 ![Error-Logs](screenshots/Error-logs.jpg)
 
