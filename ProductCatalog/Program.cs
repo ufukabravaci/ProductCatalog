@@ -70,7 +70,14 @@ namespace ProductCatalog
                     }
 
 
-                    Product product = new(productName, description, price, stock, categoryId);
+                    Product product = new()
+                    {
+                        Name = productName,
+                        Description = description,
+                        Price = price,
+                        Stock = stock,
+                        CategoryId = categoryId
+                    };
                     int result = productService.AddProduct(product);
                     if (result == 1)
                     {
@@ -128,7 +135,15 @@ namespace ProductCatalog
                     }
 
 
-                    Product productToUpdate = new(productIdToUpdate, productNameToUpdate, descriptionToUpdate, priceToUpdate, stockToUpdate, categoryIdToUpdate);
+                    Product productToUpdate = new()
+                    {
+                        Id = productIdToUpdate,
+                        Name = productNameToUpdate,
+                        Price = priceToUpdate,
+                        Stock = stockToUpdate,
+                        CategoryId = categoryIdToUpdate,
+
+                    };
                     int isUpdated = productService.UpdateProduct(productToUpdate);
                     if (isUpdated == 1)
                     {
@@ -260,7 +275,10 @@ namespace ProductCatalog
                         Console.WriteLine("Kategori adı boş olamaz.");
                         break;
                     }
-                    Category category = new(categoryName);
+                    Category category = new()
+                    {
+                        Name = categoryName
+                    };
                     int result7 = categoryService.AddCategory(category);
                     if (result7 > 0)
                     {

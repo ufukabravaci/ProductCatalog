@@ -6,39 +6,12 @@ namespace ProductCatalog.models
 {
     public class Product
     {
-        public Product(string name, string categoryId) //name ve categoryId zorunlu createdat otomatik
-        {
-            Name = name;
-            CategoryId = categoryId;
-            CreatedAt = DateTime.UtcNow;
-        }
-        //Update için id'li ctor
-        public Product(string id,string name, string description, decimal price, int stock, string categoryId)
-        {
-            Id = id;
-            Name = name;
-            Description = description;
-            Price = price;
-            Stock = stock;
-            CategoryId = categoryId;
-            CreatedAt = DateTime.UtcNow;
-        }
-        //Insert için id'siz ctor
-        public Product(string name, string description, decimal price, int stock, string categoryId)
-        {
-            Name = name;
-            Description = description;
-            Price = price;
-            Stock = stock;
-            CategoryId = categoryId;
-            CreatedAt = DateTime.UtcNow;
-        }
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
         [BsonElement("name")]
         [Required]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
         [BsonElement("description")]
         public string? Description { get; set; }
 
@@ -54,7 +27,7 @@ namespace ProductCatalog.models
         [BsonElement("categoryId")]
         [Required]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string CategoryId { get; set; }
+        public string CategoryId { get; set; } = null!;
         [BsonElement("createdAt")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
